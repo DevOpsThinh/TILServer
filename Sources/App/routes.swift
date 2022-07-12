@@ -16,4 +16,12 @@ func routes(_ app: Application) throws {
         }
         return "Hi, \(name)!"
     }
+    // Register a new route at /api/terminologies
+    app.post("api", "terminologies") { req -> EventLoopFuture<Terminology> in
+        let term = try req.content.decode(Terminology.self)
+
+        return term.save(on: req.db).map {
+            term
+        }
+    }
 }
