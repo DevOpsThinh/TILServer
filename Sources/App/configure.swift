@@ -2,6 +2,7 @@ import Fluent
 import FluentPostgresDriver
 import Leaf
 import Vapor
+//import FluentSQLiteDriver
 
 // configures your application
 public func configure(_ app: Application) throws {
@@ -15,6 +16,8 @@ public func configure(_ app: Application) throws {
         password: Environment.get("DATABASE_PASSWORD") ?? "vapor_password",
         database: Environment.get("DATABASE_NAME") ?? "vapor_database"
     ), as: .psql)
+
+//    app.databases.use(.sqlite(.memory), as: .sqlite)
 
     app.migrations.add(CreateTerminology())
 
