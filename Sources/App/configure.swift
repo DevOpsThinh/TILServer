@@ -19,6 +19,8 @@ public func configure(_ app: Application) throws {
 
 //    app.databases.use(.sqlite(.memory), as: .sqlite)
 
+    // The migration list in the correct order
+    app.migrations.add(CreateUser())
     app.migrations.add(CreateTerminology())
 
     app.logger.logLevel = .debug

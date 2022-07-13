@@ -11,6 +11,7 @@ struct CreateTerminology: Migration {
             .id()
             .field("short", .string, .required)
             .field("long", .string, .required)
+            .field("userID", .uuid, .required, .references("users", "id")) // the users-terminologies foreign key constraint
             .create()
     }
 

@@ -28,6 +28,8 @@ struct TerminologiesController: RouteCollection {
         terminologiesRoutes.get("first", use: getFirstHandler)
         // Register a new route at /api/terminologies/sorted for sort the results of queries before returning them.
         terminologiesRoutes.get("sorted", use: sortedHandler)
+        // Register a new route at /api/terminologies/<id>/user for retrieve the user
+        terminologiesRoutes.get(":terminologyID", "user", use: getUserHandler)
 
     }
     /// A route handler: Makes a GET request to /api/terminologies
@@ -36,8 +38,17 @@ struct TerminologiesController: RouteCollection {
     }
     /// A route handler: Makes a POST request to /api/terminologies
     func createHandler(_ req: Request) throws -> EventLoopFuture<Terminology> {
-        let term = try req.content.decode(Terminology.self)
-        return term.save(on: req.db).map { term }
+//        let term = try req.content.decode(Terminology.self)
+//        return term.save(on: req.db).map { term }
+
+        let termData = try req.content.decode(CreateTermData.self)
+
+        let term = Terminology(
+            short: termData.short,
+            long: termData.long,
+            userID: termData.userID
+        )
+        return term.save(on: req.db).map{ term }
     }
     /// A route handler: Makes a GET request to /api/terminologies/<ID>
     func getHandler(_ req: Request) throws -> EventLoopFuture<Terminology> {
@@ -47,15 +58,25 @@ struct TerminologiesController: RouteCollection {
     }
     /// A route handler: Makes a PUT request to /api/terminologies/<ID>
     func updateHandler(_ req: Request) throws -> EventLoopFuture<Terminology> {
-        let updatedTerm = try req.content.decode(Terminology.self)
+        let updateData = try req.content.decode(CreateTermData.self)
         return Terminology
             .find(req.parameters.get("terminologyID"), on: req.db)
             .unwrap(or: Abort(.notFound))
-            .flatMap { term in
-                term.short = updatedTerm.short
-                term.long = updatedTerm.long
+            .flatMap{ term in
+                term.short = updateData.short
+                term.long = updateData.long
+                term.$user.id = updateData.userID
                 return term.save(on: req.db).map { term }
             }
+//        let updatedTerm = try req.content.decode(Terminology.self)
+//        return Terminology
+//            .find(req.parameters.get("terminologyID"), on: req.db)
+//            .unwrap(or: Abort(.notFound))
+//            .flatMap { term in
+//                term.short = updatedTerm.short
+//                term.long = updatedTerm.long
+//                return term.save(on: req.db).map { term }
+//            }
     }
     /// A route handler: Makes a DELETE request to /api/terminologies/<ID>
     func deleteHandler(_ req: Request) throws -> EventLoopFuture<HTTPStatus> {
@@ -93,4 +114,20 @@ struct TerminologiesController: RouteCollection {
             .sort(\.$short, .ascending)
             .all()
     }
+    /// A route handler: Makes a GET request to /api/terminologies/<id>/user
+    func getUserHandler(_ req: Request) throws -> EventLoopFuture<User> {
+        Terminology
+            .find(req.parameters.get("terminologyID"), on: req.db)
+            .unwrap(or: Abort(.notFound))
+            .flatMap { term in
+                term.$user.get(on: req.db)
+            }
+    }
+}
+
+/// A  DTO will be converted into something by a route handler
+struct CreateTermData: Content {
+    let short: String
+    let long: String
+    let userID: UUID
 }
