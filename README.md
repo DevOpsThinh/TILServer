@@ -1,3 +1,4 @@
+<strong><em>"Thanks for your reading, please give me a STAR!"<em><strong>
 ### The world of server development with the added bonus of using Swift
 
 - [ ] Build complex server applications using the Vapor framework to support our apps & front-end websites
