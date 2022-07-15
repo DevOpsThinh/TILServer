@@ -22,6 +22,8 @@ public func configure(_ app: Application) throws {
     // The migration list in the correct order
     app.migrations.add(CreateUser())
     app.migrations.add(CreateTerminology())
+    app.migrations.add(CreateCategory())
+    app.migrations.add(CreateTermCatePivot())
 
     app.logger.logLevel = .debug
 

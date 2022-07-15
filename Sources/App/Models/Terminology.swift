@@ -21,6 +21,13 @@ final class Terminology: Model {
     @Parent(key: "userID")
     var user: User
 
+    @Siblings(
+        through: TermCatePivot.self,
+        from: \.$terminology,
+        to: \.$category
+    )
+    var categories: [Category]
+
     init() {}
 
     init(id: UUID? = nil, short: String, long: String, userID: User.IDValue) {

@@ -6,7 +6,7 @@
 import Vapor
 
 struct UsersController: RouteCollection {
-    /// Register routes
+    /// Register route handlers
     func boot(routes: RoutesBuilder) throws {
         // A route group for the path /api/users.
         let usersRoutes = routes.grouped("api", "users")

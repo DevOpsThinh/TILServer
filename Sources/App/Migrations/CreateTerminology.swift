@@ -6,6 +6,7 @@
 import Fluent
 
 struct CreateTerminology: Migration {
+    /// Create the terminologies table in the database with columns
     func prepare(on databse: Database) -> EventLoopFuture<Void> {
         databse.schema("terminologies")
             .id()
@@ -14,7 +15,7 @@ struct CreateTerminology: Migration {
             .field("userID", .uuid, .required, .references("users", "id")) // the users-terminologies foreign key constraint
             .create()
     }
-
+    /// Deletes the table named terminologies
     func revert(on database: Database) -> EventLoopFuture<Void> {
         database.schema("terminologies").delete()
     }

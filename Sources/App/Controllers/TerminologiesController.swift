@@ -7,7 +7,7 @@ import Vapor
 import Fluent
 
 struct TerminologiesController: RouteCollection {
-    /// Register routes
+    /// Register route handlers
     func boot(routes: RoutesBuilder) throws {
         // A route group for the path /api/terminologies.
         let terminologiesRoutes = routes.grouped("api", "terminologies")
@@ -30,6 +30,16 @@ struct TerminologiesController: RouteCollection {
         terminologiesRoutes.get("sorted", use: sortedHandler)
         // Register a new route at /api/terminologies/<id>/user for retrieve the user
         terminologiesRoutes.get(":terminologyID", "user", use: getUserHandler)
+        // Register a new route at /api/terminologies/<term_id>/categories/<cate_id> for setting up the relationship
+        // between terminology & category.
+        terminologiesRoutes.post(":terminologyID", "categories", ":categoryID",
+                                 use: addCategoriesHandler)
+        // Register a new route at /api/terminologies/<id>/categories for retrieve the categories list.
+        terminologiesRoutes.get(":terminologyID", "categories", use: getCategoriesHandler)
+        // Register a new route at /api/terminologies/<term_id>/categories/<cate_id> for remove the relationship
+        // between terminology & category.
+        terminologiesRoutes.delete(":terminologyID", "categories", ":categoryID",
+                                   use: removeCategoriesHandler)
 
     }
     /// A route handler: Makes a GET request to /api/terminologies
@@ -122,6 +132,46 @@ struct TerminologiesController: RouteCollection {
             .flatMap { term in
                 term.$user.get(on: req.db)
             }
+    }
+    /// A route handler: Makes a POST request to /api/terminologies/<term_id>/categories/<cate_id>
+    func addCategoriesHandler(_ req: Request) throws -> EventLoopFuture<HTTPStatus> {
+        let termQuery = Terminology
+            .find(req.parameters.get("terminologyID"), on: req.db)
+            .unwrap(or: Abort(.notFound))
+        let cateQuery = Category
+            .find(req.parameters.get("categoryID"), on: req.db)
+            .unwrap(or: Abort(.notFound))
+        return termQuery.and(cateQuery)
+            .flatMap { term, cate in
+                term
+                    .$categories
+                    .attach(cate, on: req.db)
+                    .transform(to: .created)
+            }
+    }
+    /// A route handler: Makes a GET request to /api/terminologies/<ID>/categories
+    func getCategoriesHandler(_ req: Request) throws -> EventLoopFuture<[Category]> {
+        Terminology
+            .find(req.parameters.get("terminologyID"), on: req.db)
+            .unwrap(or: Abort(.notFound))
+            .flatMap { term in
+                term.$categories.query(on: req.db).all()
+            }
+    }
+    /// A route handler: Makes a DELETE request to /api/terminologies/<termID>/categories/<cateID>
+    func removeCategoriesHandler(_ req: Request) throws -> EventLoopFuture<HTTPStatus> {
+        let termQuery = Terminology
+            .find(req.parameters.get("terminologyID"), on: req.db)
+            .unwrap(or: Abort(.notFound))
+        let cateQuery = Category
+            .find(req.parameters.get("categoryID"), on: req.db)
+            .unwrap(or: Abort(.notFound))
+        return termQuery.and(cateQuery).flatMap { term, cate In
+            term
+                .$categories
+                .detach(cate, on: req.db)
+                .transform(to: .noContent)
+        }
     }
 }
 
