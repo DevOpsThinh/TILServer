@@ -166,7 +166,7 @@ struct TerminologiesController: RouteCollection {
         let cateQuery = Category
             .find(req.parameters.get("categoryID"), on: req.db)
             .unwrap(or: Abort(.notFound))
-        return termQuery.and(cateQuery).flatMap { term, cate In
+        return termQuery.and(cateQuery).flatMap { term, cate in
             term
                 .$categories
                 .detach(cate, on: req.db)
