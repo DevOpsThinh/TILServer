@@ -6,7 +6,6 @@
 //
 @testable import App
 import XCTVapor
-import Darwin
 
 final class UserTests: XCTestCase {
     /// The common properties
