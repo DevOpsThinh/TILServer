@@ -1,0 +1,17 @@
+<!--Terminology detail page-->
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+
+  <title>#(title) | Encyclopedia</title>
+</head>
+
+<body>
+  <h1>#(terminology.short)</h1>
+  <h2>#(terminology.long)</h2>
+
+  <p>Created by #(user.name)</p>
+</body>
+</html>
+
