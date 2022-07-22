@@ -1,0 +1,26 @@
+<!--The sharing terminologies table template-->
+#if(count(terminologies) > 0):
+  <table class="table table-bordered table-hover">
+    <thead class="table-light">
+      <tr>
+        <th>Short</th>
+        <th>Long</th>
+      </tr>
+    </thead>
+    <tbody>
+      #for(term in terminologies):
+        <tr>
+          <td>
+            <a href="/terminologies/#(term.id)">
+              #(term.short)
+            </a>
+          </td>
+          <td>#(term.long)</td>
+        </tr>
+      #endfor
+    </tbody>
+  </table>
+#else:
+  <h2>There aren’t any terminologies yet!</h2>
+#endif
+

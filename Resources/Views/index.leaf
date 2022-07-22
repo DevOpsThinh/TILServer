@@ -1,12 +1,10 @@
-<!doctype html>
-<html lang="en">
-<head>
-  <meta charset="utf-8">
+<!--The index page-->
+#extend("base"):
+    #export("content"):
+        <img src="/images/logo.png" class="mx-auto d-block" alt="TIL Logo" />
+        <h1>Terminologies</h1>
 
-  <title>#(title)</title>
-</head>
+        #extend("terminologiesTable")
 
-<body>
-  <h1>#(title)</h1>
-</body>
-</html>
+    #endexport
+#endextend
