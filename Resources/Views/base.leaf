@@ -27,10 +27,20 @@
               <a class="nav-link #if(title == "Home page"): active #endif" aria-current="page" href="/">Home</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link #if(title == "All Users"): active #endif"
-               aria-current="page" href="/users">All Users</a>
+              <a class="nav-link #if(title == "All Users"): active #endif" aria-current="page" href="/users">
+                All Users
+              </a>
             </li>
-
+            <li class="nav-item">
+              <a class="nav-link #if(title == "All Categories"): active #endif" aria-current="page" href="/categories">
+                All Categories
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link #if(title == "New Terminology"): active #endif" aria-current="page" href="/terminologies/create">
+                New Terminology
+              </a>
+            </li>
           </ul>
         </div>
       </div>

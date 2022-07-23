@@ -5,5 +5,9 @@
         <h2>#(terminology.long)</h2>
 
         <p>Created by <a href="/users/#(user.id)">#(user.name)</a></p>
+        <form method="post" action="/terminologies/#(terminology.id)/delete">
+            <a class="btn btn-primary" href="/terminologies/#(terminology.id)/edit" role="button">Edit</a>&nbsp;
+            <input class="btn btn-danger" type="submit" value="Delete" />
+        </form>
     #endexport
 #endextend
